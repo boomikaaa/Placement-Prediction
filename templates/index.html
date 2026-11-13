@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Predictor - Machine Learning System</title>
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="glow-bg"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>PLACEMENT PREDICTOR</span>
+            </div>
+            <h1>Student Placement Prediction</h1>
+            <p class="subtitle">Enter student academic and skill metrics to evaluate placement probability using our
+                trained Random Forest model.</p>
+        </header>
+
+        <main>
+            <div class="card-grid">
+                <!-- Form Section -->
+                <div class="card form-card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-sliders"></i> Student Profiles & Metrics</h2>
+                        <p>Fill out the profile details manually to test predictions.</p>
+                    </div>
+
+                    <form id="prediction-form">
+                        <!-- Row 1: Academic Scores -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="ssc_marks">SSLC Marks (%)</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-percent"></i>
+                                    <input type="number" id="ssc_marks" name="ssc_marks" min="0" max="100" step="0.01"
+                                        placeholder="e.g. 85.5" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="hsc_marks">PUC Marks (%)</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-percent"></i>
+                                    <input type="number" id="hsc_marks" name="hsc_marks" min="0" max="100" step="0.01"
+                                        placeholder="e.g. 78.2" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 2: CGPA & Aptitude -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cgpa">CGPA (5.0 - 10.0)</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-star"></i>
+                                    <input type="number" id="cgpa" name="cgpa" min="5.0" max="10.0" step="0.01"
+                                        placeholder="e.g. 8.4" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="aptitude_score">Aptitude Score (%)</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-brain"></i>
+                                    <input type="number" id="aptitude_score" name="aptitude_score" min="0" max="100"
+                                        step="0.01" placeholder="e.g. 75.0" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 3: Soft Skills & Internships -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="soft_skills">Soft Skills Rating (1 - 5)</label>
+                                <div class="select-wrapper">
+                                    <i class="fa-solid fa-comments"></i>
+                                    <select id="soft_skills" name="soft_skills" required>
+                                        <option value="1">1 - Poor</option>
+                                        <option value="2">2 - Below Average</option>
+                                        <option value="3" selected>3 - Average</option>
+                                        <option value="4">4 - Good</option>
+                                        <option value="5">5 - Excellent</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="internships">Internships (Count)</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-briefcase"></i>
+                                    <input type="number" id="internships" name="internships" min="0" max="10"
+                                        placeholder="e.g. 1" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 4: Projects & Certifications -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="projects">Projects Completed</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-laptop-code"></i>
+                                    <input type="number" id="projects" name="projects" min="0" max="20"
+                                        placeholder="e.g. 2" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="certifications">Workshops / Certifications</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-certificate"></i>
+                                    <input type="number" id="certifications" name="certifications" min="0" max="20"
+                                        placeholder="e.g. 1" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 5: Training & Extracurriculars -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="placement_training">Placement Training Program</label>
+                                <div class="select-wrapper">
+                                    <i class="fa-solid fa-chalkboard-user"></i>
+                                    <select id="placement_training" name="placement_training" required>
+                                        <option value="Yes">Yes, Completed</option>
+                                        <option value="No">No, Not Taken</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="extracurricular">Extracurricular Activities</label>
+                                <div class="select-wrapper">
+                                    <i class="fa-solid fa-medal"></i>
+                                    <select id="extracurricular" name="extracurricular" required>
+                                        <option value="Yes">Yes, Active</option>
+                                        <option value="No">No, Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="submit-btn" class="submit-btn">
+                            <span>Analyze Placement Probability</span>
+                            <i class="fa-solid fa-arrow-right-long"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Results Section -->
+                <div class="card result-card placeholder-active" id="result-card">
+                    <div class="result-placeholder">
+                        <div class="icon-pulse">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <h3>Awaiting Input Data</h3>
+                        <p>Fill out the student details and click "Analyze Placement Probability" to view the predicted
+                            placement status and probability report.</p>
+                    </div>
+
+                    <div class="result-content hidden" id="result-content">
+                        <h2>Prediction Result</h2>
+
+                        <div class="prediction-outcome" id="prediction-outcome">
+                            <span class="outcome-badge placed">PLACED</span>
+                        </div>
+
+                        <div class="progress-container">
+                            <span class="progress-label">Placement Probability</span>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="prob-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-percent" id="prob-percent">0%</span>
+                        </div>
+
+                        <div class="report-details">
+                            <h3>Analysis Summary</h3>
+                            <p id="analysis-summary"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
